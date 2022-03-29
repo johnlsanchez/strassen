@@ -48,6 +48,7 @@
 class matrix {
     public:
         matrix(int* file_data, int dim) {
+            data_ = (int*) malloc(sizeof(int) * dim * dim);
             dim_ = dim;
             for (int i = 0; i < dim_; i++) {
                 data_[i] = file_data[i];
