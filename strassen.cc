@@ -11,6 +11,17 @@ public:
     matrix(int* file_data, int dim) {
         data_ = file_data;
         dim_ = dim;
+        r_start_ = 0;
+        c_start_ = 0;
+        dim_whole_ = dim;
+    }
+
+    matrix(int* file_data, int dim_whole, int dim, int r_start, int c_start) {
+        data_ = file_data;
+        dim_whole_ = dim_whole;
+        dim_ = dim;
+        r_start_ = r_start;
+        c_start_ = c_start;
     }
 
     void print() {
@@ -38,7 +49,7 @@ public:
     matrix operator*(matrix B) {
         int* c_data;
         c_data = (int*)malloc(sizeof(int) * this->dim_ * this->dim_);
-        C = matrix(c_data, this->dim_);
+        matrix C = matrix(c_data, this->dim_);
         for (int i = 0; i < this->dim_; i++) {
             for (int k = 0; k < this->dim_; k++) {
                 for (int j = 0; j < this->dim_; j++) {
@@ -51,11 +62,13 @@ public:
     }
 
     matrix operator+(matrix B) {
-        int *c_data;
-        c_data = (int *) malloc(sizeof(int) * this->dim_ * this->dim_);
+        int* c_data;
+        c_data = (int*)malloc(sizeof(int) * this->dim_ * this->dim_);
+        matrix C = matrix(c_data, this->dim_);
         for (int i = 0; i < this->dim_ * this->dim_; i++) {
             c_data[i] = (*this)(i / this->dim_, i % this->dim_) + B(i / this->dim_, i % this->dim_);
         }
+        return C;
     }
         void shift_start_pointer(int r_start, int c_start, int new_dim) {
             this->r_start_ += r_start;
@@ -66,16 +79,20 @@ public:
     matrix operator-(matrix B) {
         int* c_data;
         c_data = (int*)malloc(sizeof(int) * this->dim_ * this->dim_);
+        matrix C = matrix(c_data, this->dim_);
         for (int i = 0; i < this->dim_ * this->dim_; i++) {
             c_data[i] = (*this)(i / this->dim_, i % this->dim_) - B(i / this->dim_, i % this->dim_);
         }
-        return matrix(c_data, this->dim_);
+        return C;
     }
 
 
 private:
     int* data_;
     int dim_;
+    int r_start_;
+    int c_start_;
+    int dim_whole_;
 };
 
 int main() {
@@ -85,6 +102,8 @@ int main() {
     matrix B = matrix(&b[0], 2);
     A.print();
     B.print();
-    matrix C = A - B;
+    matrix C = A + B;
     C.print();
+    matrix D = A - B;
+    D.print();
 ;}
