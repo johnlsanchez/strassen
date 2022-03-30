@@ -6,75 +6,69 @@
 #include <ctime>
 #include <iostream>
 
-// struct matrix {
-//     int* mat;
-
-//     matrix(int n, int* values) {
-//         mat = new int[n * n];
-//         for (int i = 0; i < n * n; i++) {
-//             mat[i] = values[i];
-//         }
-//     }
-// };
-
-// // matrix* transpose(int n, matrix* a) {
-// //     int ans[n * n];
-// //     if ()
-// // }
-
-// matrix* standard_mult(int n, matrix* a, matrix* b) {
-//     int answer[n * n];
-//     matrix* b_t = b; // change to transpose
-    
-//     int pos = 0;
-//     for (int i = 0; i < n; i++) {
-//         int sum = 0;
-//         for (int j = 0; j < n * n; j++) {
-//             sum += a->mat[i * n + j % n] * b_t->mat[j];
-//             if (j % n == n - 1) {
-//                 answer[pos] = sum;
-//                 pos++;
-//                 sum = 0;
-//             }
-            
-//         }
-//     }
-
-
-//     matrix* product = new matrix(n, answer);
-//     return product;
-// }
 
 class matrix {
     public:
         matrix(int* file_data, int dim) {
-            data_ = (int*) malloc(sizeof(int) * dim * dim);
+            data_ = file_data;
             dim_ = dim;
-            for (int i = 0; i < dim_; i++) {
-                data_[i] = file_data[i];
-            }
+            dim_whole_ = dim;
+            r_start_ = 0;
+            c_start_ = 0;
         }
 
         void print() {
-            for (int i = 0; i < dim_; i++) {
-                for (int j = 0; j < dim_; j++) {
-                    std::cout << data_[i * dim_ + j] << ' ';
+            for (int i = 0; i < this->dim_; i++) {
+                for (int j = 0; j < this->dim_; j++) {
+                    std::cout << this->at(i, j) << ' ';
                 }
                 std::cout << '\n';
             }
         }
 
+        matrix add(matrix B) {
+            int* c_data = (int*) malloc(sizeof(int) * this->dim_ * this->dim_);
+            for (int i = 0; i < this->dim_; i++) {
+                for (int j = 0; j < this->dim_; j++) {
+                    c_data[i * this->dim_ + j] = this->at(i, j) + B.at(i, j);
+                }
+            }
+            return matrix(c_data, this->dim_);
+        }
+
+        matrix sub(matrix B) {
+            int* c_data = (int*) malloc(sizeof(int) * this->dim_ * this->dim_);
+            for (int i = 0; i < this->dim_; i++) {
+                for (int j = 0; j < this->dim_; j++) {
+                    c_data[i * this->dim_ + j] = this->at(i, j) + B.at(i, j);
+                }
+            }
+            return matrix(c_data, this->dim_);
+        }
+
+        void shift_start_pointer(int r_start, int c_start, int new_dim) {
+            this->r_start_ += r_start;
+            this->c_start_ += c_start;
+            this->dim_ = new_dim;
+        }
+
+        int at(int r, int c) {
+            assert(r < this->dim_);
+            assert(c < this->dim_);
+            return this->data_[(this->r_start_ + r) * this->dim_whole_ + this->c_start_ + c];
+        }
+
     private:
         int* data_;
+        int dim_whole_;
         int dim_;
+        int r_start_;
+        int c_start_;
 };
 
 int main() {
-    std::cout << 'p';
-    int a[4] = {1, 2, 3, 4};
-    std::cout << 'p';
-    matrix A = matrix(a, 2);
-    std::cout << 'p';
+    int a[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    matrix A = matrix(a, 4);
+    A.shift_start_pointer(1, 1, 2);
     A.print();
-    std::cout << 'p';
 }
