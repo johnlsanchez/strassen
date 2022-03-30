@@ -35,19 +35,18 @@ public:
         return dim_;
     }
 
-    matrix mul(matrix B) {
+    matrix operator*(matrix B) {
         int* c_data;
         c_data = (int*)malloc(sizeof(int) * this->dim_ * this->dim_);
+        C = matrix(c_data, this->dim_);
         for (int i = 0; i < this->dim_; i++) {
-            for (int j = 0; j < this->dim_; j++) {
-                int sum = 0;
-                for (int k = 0; k < this->dim_; k++) {
-                    sum += (*this)(j, k) * B(k, i);
+            for (int k = 0; k < this->dim_; k++) {
+                for (int j = 0; j < this->dim_; j++) {
+                    C(i, j) += (*this)(i, k) * B(k, j);
                 }
-                c_data[j * this->dim_ + i] = sum;
             }
         }
-        return matrix(c_data, this->dim_);
+        return C;
 
     }
 
