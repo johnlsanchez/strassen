@@ -52,14 +52,17 @@ public:
     }
 
     matrix operator+(matrix B) {
-        int* c_data;
-        c_data = (int*)malloc(sizeof(int) * this->dim_ * this->dim_);
+        int *c_data;
+        c_data = (int *) malloc(sizeof(int) * this->dim_ * this->dim_);
         for (int i = 0; i < this->dim_ * this->dim_; i++) {
             c_data[i] = (*this)(i / this->dim_, i % this->dim_) + B(i / this->dim_, i % this->dim_);
         }
-        return matrix(c_data, this->dim_);
-
     }
+        void shift_start_pointer(int r_start, int c_start, int new_dim) {
+            this->r_start_ += r_start;
+            this->c_start_ += c_start;
+            this->dim_ = new_dim;
+        }
 
     matrix operator-(matrix B) {
         int* c_data;
